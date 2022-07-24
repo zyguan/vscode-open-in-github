@@ -1,10 +1,8 @@
-import { window, workspace, QuickPickItem } from "vscode";
+import { window, workspace, env, Uri, QuickPickItem } from "vscode";
 
 const exec = require("child_process").exec;
 const path = require("path");
-const open = require("open");
 const R = require("ramda");
-const clipboardy = require("clipboardy");
 
 export const BRANCH_URL_SEP = " — ";
 
@@ -493,9 +491,9 @@ export function showQuickPickWindow(quickPickList: QuickPickItem[]) {
  *
  * @param {String} item
  */
-export function openQuickPickItem(item?: QuickPickItem) {
+export async function openQuickPickItem(item?: QuickPickItem) {
   if (!item) return;
-  open((item as any).url);
+  await env.openExternal(Uri.parse((item as any).url));
 }
 
 /**
@@ -503,10 +501,10 @@ export function openQuickPickItem(item?: QuickPickItem) {
  *
  * @param {String} item
  */
-export function copyQuickPickItem(item?: QuickPickItem) {
+export async function copyQuickPickItem(item?: QuickPickItem) {
   if (!item) return;
   const url = (item as any).url;
-  clipboardy.writeSync(url);
+  await env.clipboard.writeText(url);
   window.showInformationMessage("Copied to the clipboard: " + url);
 }
 
